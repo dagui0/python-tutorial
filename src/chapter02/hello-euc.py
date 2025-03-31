@@ -1,0 +1,3 @@
+#!/usr/bin/env python3
+# -*- coding: euckr -*-
+print("¿©·¯ºÐ ¾È³ç")
