@@ -449,6 +449,8 @@ array([[ 2,  6, 12],
 
 ## 3.2. 프로그래밍으로의 첫걸음
 
+파이썬은 탁상 계산기 이상의 일을 할 수 있다.
+
 ```python
 #!/usr/bin/env python3
 # fibonacci.py - print Fibonacci series
