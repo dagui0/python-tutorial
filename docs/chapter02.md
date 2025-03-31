@@ -44,8 +44,33 @@ Linux에는 python이 필수로 깔리지만 `python` 명령이 없거나 `pytho
 
 ### Windows
 
-TODO:
-* `py.exe`
+Python이 설치되면 `%SystemRoot%`(보통은 `C:\WINDOWS`)에 `py.exe`가 설치되며 `python`명령을 찾아서 실행시켜주는 역할을 한다.
+
+```
+C:\>dir %SystemRoot%\py.exe
+ C 드라이브의 볼륨에는 이름이 없습니다.
+ 볼륨 일련 번호: E88C-3F80
+
+ C:\WINDOWS 디렉터리
+
+2025-02-04  오후 04:37           772,840 py.exe
+               1개 파일             772,840 바이트
+               0개 디렉터리  210,170,204,160 바이트 남음
+
+C:\>py --list
+ -V:3.13 *        Python 3.13 (64-bit)
+ -V:2.7           Python 2.7
+
+C:\>py -3
+Python 3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> exit()
+
+C:\>py -2
+Python 2.7.18 (v2.7.18:8d21aa21f2, Apr 20 2020, 13:25:05) [MSC v.1500 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> exit()
+```
 
 ### 2.1.1. 인자 전달
 
