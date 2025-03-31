@@ -96,9 +96,36 @@ $ python hello.py -m venv
 
 ### 2.1.2. 대화형 모드
 
+스크립트를 지정하지 않고 `python` 명령을 실행하면 대화형 모드로 진입한다.
+스크립트 파일명이 `-`인 경우 터미널(`stdin`)에서 읽어들이라는 의미로 이해한다. 이 또한 대화형 모드로 진입한다.
+
+`>>>`: 기본 프롬프트
+`...`: 문장이 끝나지 않았음을 나타내는 프롬프트
+
+```
+$ python - 이노무자스가
+Python 3.12.3 (main, Feb  4 2025, 14:48:35) [GCC 13.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> if len(sys.argv) > 1:
+...     target = sys.argv[1]
+... else:
+...     target = "여러분"
+... 
+>>> print(target + " 안녕!")
+이노무자스가 안녕!
+>>> exit()
+```
 
 ## 2.2. 인터프리터와 환경
 
-
 ### 2.2.1. 소스 코드 인코딩
 
+Python 3은 기본적으로 UTF-8 인코딩을 사용한다.
+인코딩을 다르게 지정하려면 소스 코드의 첫 줄에 인코딩을 지정해줄 수 있다.
+
+```python
+#!/usr/bin/env python3
+# -*- coding: euckr -*-
+print("여러분 안녕")
+```
