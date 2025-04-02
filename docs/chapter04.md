@@ -433,6 +433,92 @@ def is_diagonal(point):
   ```
 
 ## 4.8. 함수 정의하기
+
+```python
+def fib(n):
+    """Print a Fibonacci series less than n"""
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()
+```
+
+함수의 정의는 `def` 키워드로 할 수 있다.
+함수의 첫 줄은 문자열 리터럴이 올 수 있는데, 함수에 대한 문서화, 즉 독스트링(docstring)이 된다.
+(이 문자열은 `__doc__` 속성에 저장된다.) 문서화를 하는 습관은 좋은 것이므로 항상 독스트링을 작성하자.
+
+함수를 실행되면 지역변수를 위한 새로운 심볼 테이블이 만들어진다. 함수 내에서 대입되는 모든 값들은 지역변수 테이블에 저장된다.
+변수 값을 참조할때는 지역 -> 바깥 함수의 지역 -> 전역 -> 내장 순으로 심볼 테이블을 검색한다.
+그래서 기본적으로 전역변수를 읽을 수는 있지만, 같은 이름의 지역변수를 만들게 되면 전역변수 사용할 수 없게 된다.
+
+```
+>>> def print_g():
+...     print(a)
+... 
+>>> def print_l():
+...     print(f'a is {a}')      # 지역변수 a가 정의 되었지만 이 시점에는 초기화되지 않은 상태이다.
+...     a = 10
+...     print(f'now, a is changed to {a}')
+... 
+>>> a = 20
+>>> print_g()
+20
+>>> print_l()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 2, in print_l
+UnboundLocalError: cannot access local variable 'a' where it is not associated with a value
+```
+
+`global`(전역 변수)이나 `nonlocal`(바깥쪽 함수의 지역변수) 키워드를 사용하여 이 문제를 해결할 수 있다.
+
+```
+>>> def print_l():
+...     global a
+...     print(f'a is {a}')      # 지역변수 a가 정의 되었지만 이 시점에는 초기화되지 않은 상태이다.
+...     a = 10
+...     print(f'now, a is changed to {a}')
+... 
+>>> a = 20
+>>> print_l()
+a is 20
+now, a is changed to 10
+>>> print(a)
+10
+```
+
+함수를 호출할 때 전달되는 인자는 함수의 지역 심볼 테이블에 추가된다.
+따라서 파이썬의 함수는 값에 의한 호출(call by value)로 동작한다.
+
+함수를 정의하면 함수 이름이 현재 심볼테이블에 추가되고 함수객체를 가리키게 된다.
+그래서 함수 이름을 다른 변수에 대입하여 사용할 수도 있다.(일급 함수)
+
+```
+>>> print_l
+<function print_l at 0x7d61c44a0c20>
+>>> modify_global = print_l
+>>> modify_global
+<function print_l at 0x7d61c44a0c20>
+>>> a = 20
+>>> modify_global()
+a is 20
+now, a is changed to 10
+```
+
+함수에 `return`문 이 없어도 무언가 리턴하는데 그 값을 `None`이라고 한다.
+`None` 값은 인터프리터 상에서는 아무 값도 출력되지 않지만 값은 있는 것이고, `print()`를 사용하면 볼 수 있다. 
+
+```
+>>> a = 20
+>>> b = print_l()
+a is 20
+now, a is changed to 10
+>>> b
+>>> print(b)
+None
+```
+
 ## 4.9. 함수 정의 더 보기
 ## 4.9.1. 기본 인자 값
 ## 4.9.2. 키워드 인자
