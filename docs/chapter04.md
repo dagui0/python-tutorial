@@ -521,13 +521,217 @@ None
 
 ## 4.9. 함수 정의 더 보기
 ## 4.9.1. 기본 인자 값
+
+```python
+def ask_ok(prompt, retries=4, reminder="Please try again!"):
+    while True:
+        reply = input(prompt)
+        if reply in {'y', 'ye', 'yes'}:
+            return True
+        if reply in {'n', 'no', 'nop', 'nope'}:
+            return False
+        retries = retries - 1
+        if retries < 0:
+            raise ValueError('invalid user response')
+        print(reminder)
+```
+
+기본 인자값은 호출시에 생략할 수 있다. 기본 인자값을 설정할때는 함수의 정의 시점의 값에 따라 정해진다.
+
+```
+>>> i = 5
+>>> def f(arg = i):
+...     print(arg)
+... 
+>>> i = 6
+>>> f()
+5
+```
+
+만약 기본값을 리스나 딕셔너리 같은 가변 객체로 설정하면 의도하지 않은 결과가 될 수도 있다.
+
+```
+>>> def f(a, L = []):
+...     L.append(a)
+...     return L
+... 
+>>> print(f(1))
+[1]
+>>> print(f(2))
+[1, 2]
+>>> print(f(3))
+[1, 2, 3]
+```
+
+이 예제는 호출될 때마다 인자 값을 누적하게 된다. 처음에 설정된 기본값 익명의 리스트(`[]`) 인스턴스가 계속 기본값으로 사용되기 때문이다. 
+함수 작성자는 어쩌면 다음과 같은 의도였을 수도 있다.
+
+```
+>>> def f(a, L = None):
+...     if L is None:
+...             L = []
+...     L.append(a)
+...     return L
+... 
+>>> print(f(1))
+[1]
+>>> print(f(2))
+[2]
+>>> print(f(3))
+[3]
+```
+
 ## 4.9.2. 키워드 인자
+
+함수를 호출할 때 인자의 이름을 키워드로 지정하여 호출할 수 있다.
+
+```python
+def parrot(voltage, state = 'a stiff', action = 'voom', type1 ='Norwegian Blue'):
+    print("-- This parrot wouldn't", action, end=' ')
+    print("if you put", voltage, "volts through it.")
+    print("-- Lovely plumage, the", type1)
+    print("-- It's", state, "!")
+```
+
+* 올바른 호출
+  ```python
+  parrot(1000)
+  parrot('a million', 'bereft of life', 'jump')         # 순서 방식으로 호출해도 된다.
+  parrot(voltage=1000)
+  parrot(voltage=1000000, action='VOOOOOM')
+  parrot(action='VOOOOOM', voltage=1000000)             # 순서는 바뀌어도 상관 없다.
+  parrot('a thousand', state='pushing up the daisies')
+  ```
+* 잘못된 호출
+  ```python
+  parrot()                     # 기본값이 없는 인자는 필수 인자이다.
+  parrot(voltage=5.0, 'dead')  # 키워드 호출이 시작되면 이후에는 무조건 키워드로 호출해야 한다.
+  parrot(110, voltage=220)     # 같은 인자를 2번 지정할 수 없다.
+  parrot(actor='John Cleese')  # 정의된 인자가 아닌 인자를 지정할 수 없다.
+  ```
+
+함수 매개변수의 맨 마지막에 `*name`을 지정하면 `name`이라는 리스트가 생성되고, 모든 순서별 인자가 저장된다.
+`**name` 형태로 지정하면 `name` 이라는 딕셔너리가 생성되고, 모든 키워드 인자들이 저장된다.
+(`*name`이 `**name`보다 앞에 와야 한다.)
+
+```python
+def cheeseshop(kind, *arguments, **keywords):
+    print("-- Do you have any", kind, "?")
+    print("-- I'm sorry, we're all out of", kind)
+    for arg in arguments:
+        print("arguments:", arg)
+    print("-" * 40)
+    for kw in keywords:
+        print("keyworkds:", kw, ":", keywords[kw])
+```
+
+```
+>>> cheeseshop("Limburger", "It's very runny, sir.",
+...            "It's really very, VERY runny, sir.",
+...            shopkeeper="Michael Palin",
+...            client="John Cleese",
+...            sketch="Cheese Shop Sketch")
+-- Do you have any Limburger ?
+-- I'm sorry, we're all out of Limburger
+arguments: It's very runny, sir.
+arguments: It's really very, VERY runny, sir.
+----------------------------------------
+keyworkds: shopkeeper : Michael Palin
+keyworkds: client : John Cleese
+keyworkds: sketch : Cheese Shop Sketch
+```
+
 ## 4.9.3. 특수 매개 변수
+
+`/`, `*` 특수기호를 넣어서 인자의 호출 방법을 지정할 수 있다.
+
+```
+def f(pos1, pos2, /, pos_or_kwd, *, kwd1, kwd2):
+      -----------    ----------     ----------
+        |             |                  |
+        |        Positional or keyword   |
+        |                                - Keyword only
+         -- Positional only
+```
+
 ## 4.9.3.1. 위치-키워드(Positional-or-Keyword) 인자
+
+`/`나 `*`가 없으면 기본적으로 인자는 순서나 키워드로 호출할 수 있다.
+
 ## 4.9.3.2. 위치 전용 매개 변수
+
+`/`가 있으면 그 앞에 있는 인자는 위치 전용 인자이다. 즉, 키워드로 호출할 수 없다.
+`/`  뒤의 인자들은 위치/키워드 겸용이거나 키워드 전용이다.
+
 ## 4.9.3.3. 키워드 전용 인자
+
+`*` 이후에 나오는 인자는 키워드 전용 인자로 정의된다.
+
+```
+>>> def ff(a, *, b, c):
+...     print(a, b, c)
+... 
+>>> ff(10, 20, 30)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: ff() takes 1 positional argument but 3 were given
+>>> ff(10, b=20, c=30)
+10 20 30
+```
+
 ## 4.9.3.4. 함수 예제
+
+```python
+def standard_arg(arg):
+    print(arg)
+
+def pos_only_arg(arg, /):
+    print(arg)
+
+def kwd_only_arg(*, arg):
+    print(arg)
+
+def combined_example(pos_only, /, standard, *, kwd_only):
+    print(pos_only, standard, kwd_only)
+```
+
+위치 인자와 `**keywords`가 함께 사용되어서 이름 충돌이 발생하는 경우가 있을 수 있다.
+
+```
+>>> def foo(name, **kwds):
+...     return 'name' in kwds
+... 
+>>> foo(1, **{'name': 2})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: foo() got multiple values for argument 'name'
+```
+
+이런 경우 `/`를 사용하면 충돌을 피해갈 수 있다.
+
+```
+>>> def foo(name, /, **kwds):
+...     return 'name' in kwds
+... 
+>>> foo(1, **{'name': 2})
+True
+```
+
 ## 4.9.3.5. 복습
+
+```python
+def f(pos1, pos2, /, pos_or_kwd, *, kwd1, kwd2):
+    pass
+```
+
+* `/`를 넣어서 위치 전용으로 정의된 인자는
+  * 매개변수의 이름이 큰 의미가 없을 경우
+  * 함수가 호출될 때 순서를 강제하도록 하고 싶을 경우
+  * 임의의 키워드 인자를 받고 싶은 경우 좋다
+* 이름이 분명한 의미가 있고 코드를 이해하기 쉽도록 만든다면 키워드 전용으로 설정하자
+* API를 설계할 때는 매개변수의 이름이 수정될 때 문제가 발생하지 않도록 위치전용으로 하는 것이 안전하다.
+
+
 ## 4.9.4. 임의의 인자 목록
 ## 4.9.5. 인자 목록 언 패킹
 ## 4.9.6. 람다 표현식
